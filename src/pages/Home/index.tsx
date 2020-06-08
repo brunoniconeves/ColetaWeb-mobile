@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Feather as Icon} from '@expo/vector-icons';
-import {View, ImageBackground, Image, StyleSheet, Text} from 'react-native';
+import {View, ImageBackground, Image, StyleSheet, Text, SafeAreaView, TextInput, KeyboardAvoidingView, Platform} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 
@@ -8,37 +8,68 @@ import {useNavigation} from '@react-navigation/native';
 const Home = () => {
   const navigation = useNavigation();
 
+  const [uf, setUf] = useState('');
+  const [city, setCity] = useState('');
+
   function handleNavigateToPoints(){
-    navigation.navigate('Points');
+    navigation.navigate('Points', {
+      uf,
+      city
+    });
   }
 
   return (
-    <ImageBackground style={styles.container} source={require('../../assets/home-background.png')} resizeMode="contain" imageStyle={{ width: 274, height: 368 }}>
-      <View style={styles.main}>
-        <Image source={require('../../assets/logo.png')}/>
+    <KeyboardAvoidingView 
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' || Platform.OS === 'android' ? 'padding' : undefined}
+    >
+    <SafeAreaView style={{flex: 1}}>
+      
+        <ImageBackground style={styles.container} source={require('../../assets/home-background.png')} resizeMode="contain" imageStyle={{ width: 274, height: 368 }}>
+          <View style={styles.main}>
+            <Image source={require('../../assets/logo.png')}/>
 
-        <Text style={styles.title}>
-          Descarte seus resíduos de forma segura
-        </Text>
-        <Text style={styles.description}>
-          Ajude o xmeio ambiente encontrando facilmente o ponto de coleta mais próximo.
-        </Text>
-        
-        <View style={styles.footer}>
-          <RectButton style={styles.button} onPress={handleNavigateToPoints}>
-            <View style={styles.buttonIcon}>
-              <Text>
-                <Icon name="log-in" color="#FFF" size={24}/>
-              </Text>
+            <Text style={styles.title}>
+              Descarte seus resíduos de forma segura
+            </Text>
+            <Text style={styles.description}>
+              Encontre um ponto de coleta mais próximo de você!
+            </Text>
+            
+            <View style={styles.footer}>
+              <TextInput 
+                style={styles.input}
+                placeholder="Selecione a UF"
+                value={uf}
+                onChangeText={setUf} // = {text => setCity(text)}
+                maxLength={2}
+                autoCapitalize="characters"
+                autoCorrect={false}
+              />
+              <TextInput 
+                style={styles.input}
+                placeholder="Selecione a Cidade" 
+                value={city}
+                onChangeText={setCity} // ={text => setCity(text)}
+                autoCorrect={false}
+              />
+              <RectButton style={styles.button} onPress={handleNavigateToPoints}>
+                <View style={styles.buttonIcon}>
+                  <Text>
+                    <Icon name="log-in" color="#FFF" size={24}/>
+                  </Text>
+                </View>
+                <Text style={styles.buttonText}>
+                  Entrar
+                </Text>            
+              </RectButton>
             </View>
-            <Text style={styles.buttonText}>
-              Entrar
-            </Text>            
-          </RectButton>
-        </View>
 
-      </View>
-    </ImageBackground>
+          </View>
+        </ImageBackground>
+      
+    </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -65,6 +96,7 @@ const styles = StyleSheet.create({
     color: '#6C6C80',
     fontSize: 16,
     marginTop: 16,
+    marginBottom: 48,
     fontFamily: 'Roboto_400Regular',
     maxWidth: 260,
     lineHeight: 24,
